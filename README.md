@@ -38,7 +38,7 @@ so uh,,,,,,,
 
 don't say i didn't warn you that getting your own busalon up and running might be a fool's errand
 
-# setting up and testing the server
+## setting up and testing the server
 
 ostensibly, you should be able to just run `busalon.py`, and you're set
 
