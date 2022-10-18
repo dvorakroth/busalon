@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" id="fileinput"><button id="go">Go!</button><br>
+    <canvas id="display"></canvas>
+
+    <script>
+        (function() {
+            const display = document.getElementById('display');
+            const fileinput = document.getElementById('fileinput');
+            const gobutton = document.getElementById('go');
+
+            const context = display.getContext('2d');
+
+            gobutton.addEventListener('click', function() {
+                const file = fileinput.files[0];
+
+                if (!file) {
+                    return;
+                }
+
+                if (file.size != 800*480/8) {
+                    alert("File is not the correct size");
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                
+
+                reader.onload = function(evt) {
+                    if (evt.target.readyState==FileReader.DONE) {
+                        const arr = new Uint8Array(evt.target.result);
+                        const result = new Uint8ClampedArray(480*800*4);
+                        let idx = 0;
+                        let i = 0;
+
+                        
+                        display.width = 800;
+                        display.height = 480;
+
+                        let intervalid = null;
+                        intervalid = setInterval(function() {
+                            if (i < arr.length) {
+                                const b = arr[i];
+
+                                for (let bitmask = 0x80; bitmask > 0; bitmask >>= 1) {
+                                    const value = 255 * ((b & bitmask) ? 1 : 0);
+
+                                    result[idx] = result[idx + 1] = result[idx + 2] = value;
+                                    result[idx + 3] = 255;
+
+                                    idx += 4;
+                                }
+
+                                context.putImageData(new ImageData(result, 800, 480), 0, 0);
+
+                                i += 1;
+                            } else {
+                                clearInterval(intervalid);
+                            }
+                        }, 3);
+
+                        
+                    }
+                };
+
+                reader.readAsArrayBuffer(file);
+            });
+        })();
+    </script>
+</body>
+</html>
