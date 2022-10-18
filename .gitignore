@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+
+config.h
+DIALOGH05*
+*.7z
